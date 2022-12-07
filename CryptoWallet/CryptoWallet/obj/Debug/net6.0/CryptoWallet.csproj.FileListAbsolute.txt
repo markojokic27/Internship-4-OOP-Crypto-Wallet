@@ -1,0 +1,15 @@
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\CryptoWallet.csproj.AssemblyReference.cache
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\CryptoWallet.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\CryptoWallet.AssemblyInfoInputs.cache
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\CryptoWallet.AssemblyInfo.cs
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\CryptoWallet.csproj.CoreCompileInputs.cache
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\bin\Debug\net6.0\CryptoWallet.exe
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\bin\Debug\net6.0\CryptoWallet.deps.json
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\bin\Debug\net6.0\CryptoWallet.runtimeconfig.json
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\bin\Debug\net6.0\CryptoWallet.dll
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\bin\Debug\net6.0\CryptoWallet.pdb
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\CryptoWallet.dll
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\refint\CryptoWallet.dll
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\CryptoWallet.pdb
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\CryptoWallet.genruntimeconfig.cache
+C:\Users\Korisnik\Desktop\CryptoWallet\CryptoWallet\obj\Debug\net6.0\ref\CryptoWallet.dll
