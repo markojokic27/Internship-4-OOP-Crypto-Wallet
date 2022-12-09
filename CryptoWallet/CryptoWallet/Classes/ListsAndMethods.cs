@@ -1,23 +1,24 @@
 ﻿using CryptoWallet.Classes;
 using CryptoWallet.Classes.Asset;
 using CryptoWallet.Classes.Transaction;
+using CryptoWallet.Classes.Wallet;
 using CryptoWallet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CryptoWallet.Classes.Wallet;
 
-namespace CryptoWallet.Classes.Wallet
+namespace CryptoWallet
 {
     public static class ListsAndMethods
     {
-        public static List<NonFungibleAsset> nonFungibleAssetsList;
-        public static List<FungibleAsset> fungibleAssetsList;
-        public static List<Wallet> walletList;
+        public static List<NonFungibleAsset> nonFungibleAssetsList=new List<NonFungibleAsset>();
+        public static List<FungibleAsset> fungibleAssetsList=new List<FungibleAsset>();
+        public static List<Wallet> walletList =new List<Wallet>();
+        public static List<Transaction> transactionsList=new List<Transaction>();
 
-        public static Dictionary<Guid, double> CreateNewFungibleAsset(string walletType)
+        public static Dictionary<Guid, double> CreateNewFungibleAssets(string walletType)
         {
             Console.Clear();
             Dictionary<Guid, double> newFunigbleAssets = new Dictionary<Guid, double>();
@@ -41,8 +42,8 @@ namespace CryptoWallet.Classes.Wallet
             {
                 int test = 0;
                 Console.WriteLine("Odaberite koje ce funigble imovine posjedovati novcnik (za prestanak unesite bilo sto osim guida): ");
-                Guid a;
-                bool h=Guid.TryParse(Console.ReadLine(),out a);
+                Guid newAdress;
+                bool h=Guid.TryParse(Console.ReadLine(),out newAdress);
                 if (!h)
                 {
                     Console.WriteLine("Krivi unos");
@@ -53,24 +54,32 @@ namespace CryptoWallet.Classes.Wallet
                 if (String.Equals("Bitcoin", walletType))
                 {
                     foreach (var address in BitcoinWallet.SupportedFungibleAssets)
-                        if (a == address)
+                        if (newAdress == address)
                             test = 1;
                 }
                 if (String.Equals("Etherium", walletType))
                 {
                     foreach (var address in EtheriumWallet.SupportedFungibleAssets)
-                        if (a == address)
+                        if (newAdress == address)
                             test = 1;
                 }
                 if (String.Equals("Solana", walletType))
                 {
                     foreach (var address in SolanaWallet.SupportedFungibleAssets)
-                        if (a == address)
+                        if (newAdress == address)
                             test = 1;
                 }
+                foreach(var address in newFunigbleAssets.Keys)//NE IZBACIVA
+                    if(address==newAdress)
+                    {
+                        Console.WriteLine("Krivi unos, taj asset je vec unesen! (unesite bilo koju tipku za povratak na glavni izbornik)");
+                        Console.ReadKey();
+                        break; 
+                    }
                 if (test == 0)
                 {
-                    Console.WriteLine("Krivi unos!");
+                    Console.WriteLine("Krivi unos! (unesite bilo koju tipku za povratak na glavni izbornik)");
+                    Console.ReadKey();
                     break;
                 }
                 int b = 0;
@@ -80,7 +89,7 @@ namespace CryptoWallet.Classes.Wallet
                     int.TryParse(Console.ReadLine(), out b);
                 }
                 while (b < 1);
-                newFunigbleAssets.Add(a, b);
+                newFunigbleAssets.Add(newAdress, b);
             }
             return newFunigbleAssets;
             
@@ -110,7 +119,7 @@ namespace CryptoWallet.Classes.Wallet
                 bool h = Guid.TryParse(Console.ReadLine(), out a);
                 if (!h)
                 {
-                    Console.WriteLine("Krivi unos");
+                    Console.WriteLine("Krivi unos (Unesite bilo koju tipku za nastavakk)");
                     Console.ReadKey();
                     break;
                 }
@@ -130,7 +139,7 @@ namespace CryptoWallet.Classes.Wallet
                 }
                 if (test == 0)
                 {
-                    Console.WriteLine("Krivi unos!");
+                    Console.WriteLine("Krivi unos! (Unesite bilo koju tipku za nastavak)");
                     Console.ReadKey();
                     break;
                 }
@@ -166,42 +175,16 @@ namespace CryptoWallet.Classes.Wallet
             while (h == false);
             return a;
         }
-        public static void PrintAllAssets(Guid address)
+        public static void PrintAllAssetsForThisAddress(Guid address)
         {
             foreach (var item in ListsAndMethods.walletList)
             {
                 if (item.Address == address)
                 {
-                    if (String.Equals(item.Type, "Bitcoin"))
-                        PrintAllFungibleAsset(address);
-                    else
-                        PrintAllFungibleAsset(address);
-                    PrintAllNonFungibleAsset(address);
+                    item.PrintAllAssets();
                 }
             }
         }
-
-            public static void PrintAllFungibleAsset(Guid address)
-            {
-                foreach (var item in ListsAndMethods.walletList)
-                    if (address == item.Address)
-                        foreach (var h in item.FungibleAssetBalance)
-                        {
-                            Console.WriteLine($"\n  Adresa Fungible asseta: {h.Key}\n" +
-                                $"  Vrijednost: {h.Value}\n");
-                        }
-            }
-            public static void PrintAllNonFungibleAsset(Guid address)
-            {
-                foreach (var item in ListsAndMethods.walletList)
-                    if (address == item.Address)
-                        foreach (var l in ListsAndMethods.nonFungibleAssetsList)
-                        {
-                            if(l.Address==item.Address)
-                            Console.WriteLine($"\n  Adresa NonFungible asseta: {l.Address}\n" +
-                                $"  Vrijednost: {l.Value}\n");
-                        }
-            }
         public static Guid GetAddressOfSender()
         {
             Guid a;
@@ -209,7 +192,7 @@ namespace CryptoWallet.Classes.Wallet
             bool check = false;
             do
             {
-                Console.WriteLine("Unesite adresu posiljatelja:");
+                Console.WriteLine("\n  Unesite adresu posiljatelja:");
                 h = Guid.TryParse(Console.ReadLine(), out a);
                 foreach (var item in ListsAndMethods.walletList)
                     if (a == item.Address)
@@ -220,14 +203,14 @@ namespace CryptoWallet.Classes.Wallet
             while (h == false);
             return a;
         }
-        public static Guid GetARecieverOfSender()
+        public static Guid GetAddressOfReceiver()
         {
             Guid a;
             bool h;
             bool check = false;
             do
             {
-                Console.WriteLine("Unesite adresu posiljatelja:");
+                Console.WriteLine("\n  Unesite adresu primatelja:");
                 h = Guid.TryParse(Console.ReadLine(), out a);
                 foreach (var item in ListsAndMethods.walletList)
                     if (a == item.Address)
@@ -237,6 +220,81 @@ namespace CryptoWallet.Classes.Wallet
             }
             while (h == false);
             return a;
+        }
+        public static Guid GetAddressOfAAsset(Guid senderWallet)
+        {
+            Guid a;
+            bool h;
+            bool check = false;
+            Console.Clear();
+            Console.WriteLine("Moguci odabiri asseta: \n");
+            foreach(var item in ListsAndMethods.walletList)
+                if(item.Address== senderWallet)
+                    item.PrintAllAssets();
+            do
+            {
+                Console.WriteLine("\n  Unesite adresu asseta kojeg saljete:");
+                h = Guid.TryParse(Console.ReadLine(), out a);
+                foreach (var item in ListsAndMethods.walletList)
+                    if (senderWallet == item.Address)
+                        foreach(var asset in item.GetSupportedAssets())
+                            if(a==asset)
+                                check = true;
+                if (check == false)
+                    h = false;
+            }
+            while (h == false);
+            return a;
+        }
+        public static string GetTypeOfTransaction(Guid AddressOfAAsset)
+        {
+            foreach (var asset in ListsAndMethods.fungibleAssetsList)
+                if (asset.Address == AddressOfAAsset)
+                    return "FungibleAssetTransaction";
+            return "NonFungibleAssetTransaction";
+        }
+        public static double GetValueAtEnd(Guid addressOfAsset, double walletValueAtStart)
+        {
+            double valueAtEnd=walletValueAtStart;
+            foreach(var asset in ListsAndMethods.fungibleAssetsList)
+            {
+                if(asset.Address==addressOfAsset)
+                valueAtEnd += asset.ValueInUSD;
+            }
+            foreach (var asset in ListsAndMethods.nonFungibleAssetsList)
+            {
+                if (asset.Address == addressOfAsset)
+                    valueAtEnd += asset.ValueInUSD;
+            }
+            return valueAtEnd;
+        }
+        public static int GetNumberOfAsset(Guid senderWallet,Guid addressOfAsset)
+        {
+            double MaxOfAsset = 0;
+            foreach (var wallet in ListsAndMethods.walletList)
+                if (wallet.Address == senderWallet)
+                    foreach (var addres in wallet.FungibleAssetBalance)
+                        if (addres.Key == addressOfAsset)
+                            MaxOfAsset = addres.Value;
+
+            int b = 0;
+            do
+            {
+                Console.WriteLine("Koliko saljete odabranog fungible asseta (>1 i ne mozete poslati vise nego sto ga imate): ");
+                int.TryParse(Console.ReadLine(), out b);
+            }
+            while (b < 1 && b > MaxOfAsset);
+            return b;
+        }
+        public static void PrintAllTransaction()
+        {
+            Console.Clear();
+            Console.WriteLine("Ispis svih transakcija: ");
+            foreach(var t in ListsAndMethods.transactionsList)
+            {
+                Console.WriteLine(t.ToString());
+            }
+            Console.ReadLine();
         }
 
 

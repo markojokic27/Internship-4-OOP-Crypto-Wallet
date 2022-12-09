@@ -2,6 +2,8 @@
 using CryptoWallet.Classes.Asset;
 using CryptoWallet.Classes.Wallet;
 using CryptoWallet.Classes.Transaction;
+using CryptoWallet;
+using System.ComponentModel.DataAnnotations;
 
 internal class Program
 {
@@ -142,18 +144,18 @@ internal class Program
                     commandCreateWallet = Menus.MenuCreateWallet();
                     if (commandCreateWallet == 1) 
                     {
-                        Dictionary<Guid, double> newFunigbleAssets= ListsAndMethods.CreateNewFungibleAsset("Bitcoin");
+                        Dictionary<Guid, double> newFunigbleAssets= ListsAndMethods.CreateNewFungibleAssets("Bitcoin");
                         ListsAndMethods.walletList.Add(new BitcoinWallet(newFunigbleAssets)); 
                     }
                     if (commandCreateWallet == 2)
                     { 
-                        Dictionary<Guid, double> newFunigbleAssets = ListsAndMethods.CreateNewFungibleAsset("Etherium");
+                        Dictionary<Guid, double> newFunigbleAssets = ListsAndMethods.CreateNewFungibleAssets("Etherium");
                         List<Guid> newNonFungibleList = ListsAndMethods.CreateNewNonFungibleList("Etherium");
                         ListsAndMethods.walletList.Add(new EtheriumWallet(newFunigbleAssets, newNonFungibleList));
                     }
                     if (commandCreateWallet == 3)
                     {
-                        Dictionary<Guid, double> newFunigbleAssets = ListsAndMethods.CreateNewFungibleAsset("Solana");
+                        Dictionary<Guid, double> newFunigbleAssets = ListsAndMethods.CreateNewFungibleAssets("Solana");
                         List<Guid> newNonFungibleList = ListsAndMethods.CreateNewNonFungibleList("Solana");
                         ListsAndMethods.walletList.Add(new EtheriumWallet(newFunigbleAssets, newNonFungibleList));
                     }
@@ -171,31 +173,89 @@ internal class Program
 
                         case 1:
                             Console.Clear();
-                            ListsAndMethods.PrintAllAssets(address);
+                            ListsAndMethods.PrintAllAssetsForThisAddress(address);
+                            Console.WriteLine("\nUnesite bilo koju tipku za povratak na glavni izbornik:");
                             Console.ReadKey();
                             break;
                         case 2:
                             Console.Clear();
-                            Guid sender = ListsAndMethods.GetAddressOfSender();
-                            Guid receiver= ListsAndMethods.GetAddressOfReceiver();
-                            //NIsam Stiga :(
+                            Console.WriteLine("  Adrese walleta su:");
+                            foreach(var wallet in ListsAndMethods.walletList)
+                                Console.WriteLine($"  {wallet.Address}");
+                            Guid senderWallet = ListsAndMethods.GetAddressOfSender();
+                            Guid receiverWallet;
+                            do
+                            {
+                                receiverWallet = ListsAndMethods.GetAddressOfReceiver();
+                            }
+                            while (senderWallet==receiverWallet);
+                            
+                            Guid addressOfAsset=ListsAndMethods.GetAddressOfAAsset(senderWallet);
+                            string typeOfTransaction = ListsAndMethods.GetTypeOfTransaction(addressOfAsset);
+                            int b = ListsAndMethods.GetNumberOfAsset(senderWallet,addressOfAsset);
+                            //mozda sam triba koristit Contains()
+                            double senderWalletValueAtStart=0, senderWalletValueAtEnd=0;
+                            double receiverWalletValueAtStart = 0, receiverWalletValueAtEnd = 0;
+                            foreach (var wallet in ListsAndMethods.walletList)
+                                if (senderWallet == wallet.Address)
+                                {
+                                    senderWalletValueAtStart = wallet.GetWalletValue();
+                                    senderWalletValueAtEnd = ListsAndMethods.GetValueAtEnd(addressOfAsset, senderWalletValueAtStart);
+                                }
+                            foreach (var wallet in ListsAndMethods.walletList)
+                                if (receiverWallet == wallet.Address)
+                                {
+                                    receiverWalletValueAtStart = wallet.GetWalletValue();
+                                    receiverWalletValueAtEnd = receiverWalletValueAtStart+(senderWalletValueAtStart-senderWalletValueAtStart);
+                                }
+
+
+                            //Sad napravi nesto za dohvacanje ovih pocetnih i zavrsnih stanja walleta nakon transakcija
+
+                            Console.WriteLine("Jeste li sigurni da zelite izvrsiti transakciju: (y)");
+                            string y= Console.ReadLine();
+                            if (!String.Equals(y, "y"))
+                            {
+                                Console.WriteLine("Proces prekinut. (Dodirnite bilo koju tipku za vracanje na glavni izbornik)");
+                                Console.ReadKey();
+                                break;
+
+                            }
+
+                                
+
+
+                            if (String.Equals(typeOfTransaction, "FungibleAssetTransaction"))
+                                ListsAndMethods.transactionsList.Add(
+                                    new FungibleAssetTransaction(addressOfAsset, DateTime.Now, senderWallet, receiverWallet,b, senderWalletValueAtStart, senderWalletValueAtEnd, receiverWalletValueAtStart, receiverWalletValueAtEnd));
+                            else
+                                ListsAndMethods.transactionsList.Add(
+                                    new NonFungibleAssetTransaction(addressOfAsset, DateTime.Now, senderWallet, receiverWallet, b));
+                            Console.WriteLine("Transakcija uspjesno obavljena. (Dodirnite bilo koju tipku za vracanje na glavni izbornik)");
+                            Console.ReadKey();
                             break;
+                            
 
                         case 3:
+                            ListsAndMethods.PrintAllTransaction();
                             break;
 
                         default: break;
                     }
-
-   
+                    break;
+                case 3:
+                    command = 0;
                     break;
                 case 0:
+                    Console.WriteLine("Krivi unos.(Pritisnite bilo koju tipku za vracanje na glavni izbornik)");
+                    Console.ReadKey();
+                    command = 1;
                     break;
                 default:
                     break;
             }
         }
-        while (command != 0);
+        while (command!=0);
        
     }
 }

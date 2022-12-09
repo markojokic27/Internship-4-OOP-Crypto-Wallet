@@ -51,12 +51,43 @@ namespace CryptoWallet.Classes.Wallet
                     }
             return base.ToString()
                 + $"  Wallet type: Solana\n"
-                + $"  Value: {walletValue} USD\n";
+                + $"  Value: {Math.Round(walletValue,2)} USD\n";
 
         }
         public override string Type(Guid address)
         {
             return "Solana";
+        }
+        public override void PrintAllAssets()
+        {
+            base.PrintAllAssets();
+        }
+        public override List<Guid> GetSupportedAssets()
+        {
+            List<Guid> list = new List<Guid>();
+            list = SupportedFungibleAssets;
+            foreach (var item in SupportedNonFungibleAssets)
+                list.Add(item);
+            return list;
+        }
+        public override double GetWalletValue()
+        {
+            double walletValue = 0;
+            Guid save;
+            foreach (var item in SupportedFungibleAssets)
+                foreach (var a in ListsAndMethods.fungibleAssetsList)
+                    if (item == a.Address)
+                        walletValue += a.ValueInUSD;
+            foreach (var item in SupportedNonFungibleAssets)
+                foreach (var a in ListsAndMethods.nonFungibleAssetsList)
+                    if (item == a.Address)
+                    {
+                        save = a.AddressOfFungibleAsset;
+                        foreach (var b in ListsAndMethods.fungibleAssetsList)
+                            if (save == b.Address)
+                                walletValue += a.Value * b.ValueInUSD;
+                    }
+            return walletValue;
         }
     }
 }

@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\CryptoWallet",
+    "\\CryptoWallet\\Classes",
+    "\\CryptoWallet\\Classes\\Asset",
+    "\\CryptoWallet\\Classes\\Transaction",
+    "\\CryptoWallet\\Classes\\Wallet"
+  ],
+  "SelectedNode": "\\CryptoWallet\\Program.cs",
+  "PreviewInSolutionExplorer": false
+}

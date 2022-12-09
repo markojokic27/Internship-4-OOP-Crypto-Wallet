@@ -14,7 +14,7 @@ namespace CryptoWallet.Classes
             Console.WriteLine("  GLAVNI IZBORNIK\n" +
                 "  1 - Kreiraj wallet\n" +
                 "  2 - Pristupi walletu\n" +
-                "  0 - Izlaz iz aplikacije\n" +
+                "  3 - Izlaz iz aplikacije\n" +
                 "  Unesite broj kraj zeljne opcije: ");
             int.TryParse(Console.ReadLine(), out int command);
             return command;

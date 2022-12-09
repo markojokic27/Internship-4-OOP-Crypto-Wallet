@@ -34,6 +34,31 @@ namespace CryptoWallet.Classes.Wallet
 
         public override string ToString()
         {
+            
+            return base.ToString()
+                + $"  Wallet type: Eterium\n"
+                + $"  Value: {GetWalletValue} USD\n";
+
+        }
+        
+        public override string Type(Guid address)
+        {
+            return "Etherium";
+        }
+        public override void PrintAllAssets()
+        {
+            base.PrintAllAssets();
+        }
+        public override List<Guid> GetSupportedAssets()
+        {
+            List<Guid> list = new List<Guid>();
+            list = SupportedFungibleAssets;
+            foreach (var item in SupportedNonFungibleAssets)
+                list.Add(item);
+            return list;
+        }
+        public override double GetWalletValue()
+        {
             double walletValue = 0;
             Guid save;
             foreach (var item in SupportedFungibleAssets)
@@ -47,16 +72,9 @@ namespace CryptoWallet.Classes.Wallet
                         save = a.AddressOfFungibleAsset;
                         foreach (var b in ListsAndMethods.fungibleAssetsList)
                             if (save == b.Address)
-                                walletValue += a.Value*b.ValueInUSD;
+                                walletValue += a.Value * b.ValueInUSD;
                     }
-            return base.ToString()
-                + $"  Wallet type: Eterium\n"
-                + $"  Value: {walletValue} USD\n";
-
-        }
-        public override string Type(Guid address)
-        {
-            return "Etherium";
+            return walletValue;
         }
     }
 }
